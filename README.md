@@ -100,7 +100,7 @@ Camera ───────────→ Raspberry Pi
 ESP32 ─────────────→ Keypad
 
 Raspberry Pi ──────→ LCD Display
-'''
+```
 
 
 ## Software
