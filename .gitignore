@@ -1,0 +1,17 @@
+venv/
+__pycache__/
+*.pyc
+
+.env
+*.log
+
+camera_capture.jpg
+camera_test.jpg
+test.jpg
+
+*_backup.py
+before_*.py
+FULL_WORKING_V1.py
+AI_WORKING_BACKUP.py
+ai_test.py
+main_before_indent_fix.py
