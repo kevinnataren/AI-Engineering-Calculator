@@ -12,7 +12,7 @@ from openai import OpenAI
 
 root = tk.Tk()
 root.title("AI Engineering Calculator")
-root.geometry("480x700")
+root.geometry("320x480")
 root.configure(bg="#151515")
 
 content = tk.Frame(root, bg="#151515")
@@ -37,11 +37,11 @@ def make_home_button(text, command):
         content,
         text=text,
         command=command,
-        font=("Arial", 18, "bold"),
-        width=18,
-        height=2
+        font=("Arial", 14, "bold"),
+        width=16,
+        height=1
     )
-    button.pack(pady=10)
+    button.pack(pady=6)
 
 
 # =========================================================
@@ -54,18 +54,18 @@ def show_home():
     tk.Label(
         content,
         text="AI ENGINEERING\nCALCULATOR",
-        font=("Arial", 26, "bold"),
+        font=("Arial", 20, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(pady=(50, 15))
+    ).pack(pady=(20, 8))
 
     tk.Label(
         content,
         text="SELECT MODE",
-        font=("Arial", 13),
+        font=("Arial", 11),
         fg="gray",
         bg="#151515"
-    ).pack(pady=(0, 25))
+    ).pack(pady=(0, 10))
 
     make_home_button("CALC", show_calc)
     make_home_button("AI", show_ai)
@@ -175,14 +175,14 @@ def show_calc():
     tk.Entry(
         content,
         textvariable=expression,
-        font=("Arial", 24),
+        font=("Arial", 18),
         justify="right",
-        bd=8
+        bd=5
     ).pack(
         fill="x",
         padx=15,
-        pady=(10, 20),
-        ipady=15
+        pady=(5, 8),
+        ipady=7
     )
 
     keypad = tk.Frame(content, bg="#151515")
@@ -243,14 +243,14 @@ def show_calc():
             keypad,
             text=text,
             command=command,
-            font=("Arial", 15, "bold"),
-            width=6,
-            height=2
+            font=("Arial", 11, "bold"),
+            width=5,
+            height=1
         ).grid(
             row=row,
             column=column,
-            padx=4,
-            pady=4
+            padx=2,
+            pady=2
         )
 
 
@@ -606,18 +606,18 @@ def show_engineering():
     tk.Label(
         top,
         text="ENGINEERING",
-        font=("Arial", 18, "bold"),
+        font=("Arial", 16, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(side="left", padx=25)
+    ).pack(side="left", padx=15)
 
     tk.Label(
         content,
         text="FORMULA LIBRARY",
-        font=("Arial", 13),
+        font=("Arial", 11),
         fg="gray",
         bg="#151515"
-    ).pack(pady=(15, 20))
+    ).pack(pady=(5, 8))
 
     categories = [
         "CIRCUITS",
@@ -634,10 +634,10 @@ def show_engineering():
             content,
             text=category,
             command=lambda c=category: show_formula_sheet(c),
-            font=("Arial", 14, "bold"),
-            width=22,
-            height=2
-        ).pack(pady=5)
+            font=("Arial", 11, "bold"),
+            width=20,
+            height=1
+        ).pack(pady=3)
 
 
 def show_formula_sheet(category):
@@ -753,32 +753,33 @@ def show_camera():
     tk.Label(
         top,
         text="CAMERA MODE",
-        font=("Arial", 18, "bold"),
+        font=("Arial", 16, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(side="left", padx=25)
+    ).pack(side="left", padx=15)
 
     tk.Label(
         content,
         text="Point camera at the problem",
-        font=("Arial", 14),
+        font=("Arial", 11),
         fg="white",
         bg="#151515"
-    ).pack(pady=15)
+    ).pack(pady=6)
 
     answer_box = tk.Text(
         content,
-        font=("Arial", 14),
+        font=("Arial", 11),
+        height=13,
         wrap="word",
-        padx=10,
-        pady=10
+        padx=6,
+        pady=5
     )
 
     answer_box.pack(
         fill="both",
         expand=True,
-        padx=15,
-        pady=10
+        padx=10,
+        pady=4
     )
 
     def scan_problem():
@@ -929,14 +930,14 @@ say what is unclear instead of guessing.
         content,
         text="TAKE PHOTO & SOLVE",
         command=scan_problem,
-        font=("Arial", 15, "bold"),
-        height=2
+        font=("Arial", 12, "bold"),
+        height=1
     )
 
     scan_button.pack(
         fill="x",
-        padx=15,
-        pady=10
+        padx=10,
+        pady=6
     )
 
 def show_ai():
@@ -955,56 +956,56 @@ def show_ai():
     tk.Label(
         top,
         text="AI MODE",
-        font=("Arial", 18, "bold"),
+        font=("Arial", 16, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(side="left", padx=30)
+    ).pack(side="left", padx=22)
 
     tk.Label(
         content,
         text="ASK AI",
-        font=("Arial", 13),
+        font=("Arial", 11),
         fg="gray",
         bg="#151515"
-    ).pack(pady=(10, 5))
+    ).pack(pady=(3, 2))
 
     question_box = tk.Text(
         content,
-        font=("Arial", 15),
-        height=5,
+        font=("Arial", 12),
+        height=3,
         wrap="word",
-        padx=10,
-        pady=10
+        padx=6,
+        pady=5
     )
 
     question_box.pack(
         fill="x",
-        padx=15,
-        pady=10
+        padx=10,
+        pady=4
     )
 
     tk.Label(
         content,
         text="RESPONSE",
-        font=("Arial", 12, "bold"),
+        font=("Arial", 10, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(pady=(10, 5))
+    ).pack(pady=(3, 2))
 
     answer_box = tk.Text(
         content,
-        font=("Arial", 14),
-        height=12,
+        font=("Arial", 11),
+        height=8,
         wrap="word",
-        padx=10,
-        pady=10
+        padx=6,
+        pady=5
     )
 
     answer_box.pack(
         fill="both",
         expand=True,
-        padx=15,
-        pady=5
+        padx=10,
+        pady=3
     )
 
     def ask_ai():
@@ -1109,14 +1110,14 @@ Question:
         content,
         text="ASK AI",
         command=ask_ai,
-        font=("Arial", 15, "bold"),
-        height=2
+        font=("Arial", 12, "bold"),
+        height=1
     )
 
     ask_button.pack(
         fill="x",
-        padx=15,
-        pady=10
+        padx=10,
+        pady=4
     )
 
     def clear_ai():
@@ -1128,8 +1129,8 @@ Question:
         content,
         text="CLEAR",
         command=clear_ai,
-        font=("Arial", 12, "bold")
-    ).pack(pady=5)
+        font=("Arial", 10, "bold")
+    ).pack(pady=3)
 
 # =========================================================
 # START
