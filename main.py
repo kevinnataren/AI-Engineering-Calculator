@@ -758,18 +758,29 @@ def show_camera():
         bg="#151515"
     ).pack(side="left", padx=15)
 
-    tk.Label(
+    image_paths = []
+
+    status_label = tk.Label(
         content,
-        text="Point camera at the problem",
-        font=("Arial", 11),
+        text="Problem images: 0 / 3",
+        font=("Arial", 11, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(pady=6)
+    )
+    status_label.pack(pady=(4, 2))
+
+    tk.Label(
+        content,
+        text="Take up to 3 photos for one problem",
+        font=("Arial", 10),
+        fg="white",
+        bg="#151515"
+    ).pack(pady=(0, 6))
 
     answer_box = tk.Text(
         content,
         font=("Arial", 11),
-        height=13,
+        height=11,
         wrap="word",
         padx=6,
         pady=5
@@ -782,23 +793,88 @@ def show_camera():
         pady=4
     )
 
-    def scan_problem():
+    answer_box.insert(
+        "1.0",
+        "Use TAKE / ADD PHOTO to capture one problem.\n\n"
+        "If the problem continues onto another page or picture, "
+        "add the next photo, then press SOLVE ALL PHOTOS."
+    )
 
-        scan_button.config(
+    button_row = tk.Frame(content, bg="#151515")
+    button_row.pack(fill="x", padx=10, pady=(2, 4))
+
+    def update_camera_ui():
+        count = len(image_paths)
+
+        status_label.config(
+            text=f"Problem images: {count} / 3"
+        )
+
+        if count == 0:
+            take_button.config(
+                text="TAKE / ADD PHOTO",
+                state="normal"
+            )
+            solve_button.config(
+                text="SOLVE ALL PHOTOS",
+                state="disabled"
+            )
+            clear_button.config(
+                state="disabled"
+            )
+
+        elif count < 3:
+            take_button.config(
+                text="ADD PHOTO",
+                state="normal"
+            )
+            solve_button.config(
+                text="SOLVE ALL PHOTOS",
+                state="normal"
+            )
+            clear_button.config(
+                state="normal"
+            )
+
+        else:
+            take_button.config(
+                text="MAX 3 PHOTOS",
+                state="disabled"
+            )
+            solve_button.config(
+                text="SOLVE ALL PHOTOS",
+                state="normal"
+            )
+            clear_button.config(
+                state="normal"
+            )
+
+    def take_photo():
+
+        if len(image_paths) >= 3:
+            return
+
+        take_button.config(
             state="disabled",
             text="CAPTURING..."
         )
+        solve_button.config(state="disabled")
+        clear_button.config(state="disabled")
+
+        next_index = len(image_paths) + 1
 
         answer_box.delete("1.0", "end")
-        answer_box.insert("1.0", "Taking picture...")
+        answer_box.insert(
+            "1.0",
+            f"Taking photo {next_index}..."
+        )
 
-        def camera_worker():
+        def capture_worker():
 
             try:
-
                 image_path = (
-                    "/home/n_kevin123/AI_Calculator/"
-                    "camera_capture.jpg"
+                    f"/home/n_kevin123/AI_Calculator/"
+                    f"camera_capture_{next_index}.jpg"
                 )
 
                 subprocess.run(
@@ -813,29 +889,74 @@ def show_camera():
                     check=True
                 )
 
-                answer_box.after(
-                    0,
-                    lambda: (
-                        answer_box.delete("1.0", "end"),
-                        answer_box.insert(
-                            "1.0",
-                            "Reading problem..."
-                        )
+                def capture_done():
+                    image_paths.append(image_path)
+
+                    answer_box.delete("1.0", "end")
+                    answer_box.insert(
+                        "1.0",
+                        f"Captured photo {next_index} successfully.\n\n"
+                        "Add another photo if the problem continues,\n"
+                        "or press SOLVE ALL PHOTOS."
                     )
-                )
 
-                with open(image_path, "rb") as image_file:
+                    update_camera_ui()
 
-                    image_data = base64.b64encode(
-                        image_file.read()
-                    ).decode("utf-8")
+                root.after(0, capture_done)
 
-                camera_prompt = """
+            except Exception as error:
+
+                def capture_error():
+                    answer_box.delete("1.0", "end")
+                    answer_box.insert(
+                        "1.0",
+                        "CAMERA ERROR:\n\n" + str(error)
+                    )
+                    update_camera_ui()
+
+                root.after(0, capture_error)
+
+        threading.Thread(
+            target=capture_worker,
+            daemon=True
+        ).start()
+
+    def solve_all_photos():
+
+        if not image_paths:
+            return
+
+        take_button.config(state="disabled")
+        solve_button.config(
+            state="disabled",
+            text="SOLVING..."
+        )
+        clear_button.config(state="disabled")
+
+        answer_box.delete("1.0", "end")
+        answer_box.insert(
+            "1.0",
+            "Reading all photos..."
+        )
+
+        def solve_worker():
+
+            try:
+                content_items = [
+                    {
+                        "type": "input_text",
+                        "text": """
 You are an engineering calculator tutor.
 
-Carefully read the problem in the image.
+These images belong to ONE continuous engineering or math problem.
 
-Solve the problem using PLAIN TEXT ONLY.
+IMPORTANT:
+- Read the images in the exact order provided.
+- The problem may continue from one image to the next.
+- Combine all information across the images before solving.
+- Do not treat them as separate problems.
+
+USE PLAIN TEXT ONLY.
 
 Never use Markdown or LaTeX.
 Never use # headings.
@@ -871,28 +992,33 @@ Give the final answer with units.
 
 Keep everything short and easy to read.
 
-If any part of the image cannot be read clearly,
-say what is unclear instead of guessing.
+If part of the problem is unclear or missing,
+say exactly what is unclear instead of guessing.
 """
+                    }
+                ]
+
+                for image_path in image_paths:
+                    with open(image_path, "rb") as image_file:
+                        image_data = base64.b64encode(
+                            image_file.read()
+                        ).decode("utf-8")
+
+                    content_items.append(
+                        {
+                            "type": "input_image",
+                            "image_url":
+                                "data:image/jpeg;base64," + image_data,
+                            "detail": "high"
+                        }
+                    )
 
                 response = client.responses.create(
                     model="gpt-6-astra",
                     input=[
                         {
                             "role": "user",
-                            "content": [
-                                {
-                                    "type": "input_text",
-                                    "text": camera_prompt
-                                },
-                                {
-                                    "type": "input_image",
-                                    "image_url":
-                                        "data:image/jpeg;base64,"
-                                        + image_data,
-                                    "detail": "high"
-                                }
-                            ]
+                            "content": content_items
                         }
                     ]
                 )
@@ -900,45 +1026,73 @@ say what is unclear instead of guessing.
                 answer = response.output_text
 
             except Exception as error:
+                answer = "CAMERA ERROR:\n\n" + str(error)
 
-                answer = (
-                    "CAMERA ERROR:\n\n"
-                    + str(error)
-                )
-
-            def update_camera_screen():
-
+            def solve_done():
                 answer_box.delete("1.0", "end")
                 answer_box.insert("1.0", answer)
+                update_camera_ui()
 
-                scan_button.config(
-                    state="normal",
-                    text="TAKE PHOTO & SOLVE"
-                )
-
-            root.after(
-                0,
-                update_camera_screen
-            )
+            root.after(0, solve_done)
 
         threading.Thread(
-            target=camera_worker,
+            target=solve_worker,
             daemon=True
         ).start()
 
-    scan_button = tk.Button(
-        content,
-        text="TAKE PHOTO & SOLVE",
-        command=scan_problem,
-        font=("Arial", 12, "bold"),
+    def clear_photos():
+        image_paths.clear()
+        answer_box.delete("1.0", "end")
+        answer_box.insert(
+            "1.0",
+            "Use TAKE / ADD PHOTO to capture one problem.\n\n"
+            "If the problem continues onto another page or picture, "
+            "add the next photo, then press SOLVE ALL PHOTOS."
+        )
+        update_camera_ui()
+
+    take_button = tk.Button(
+        button_row,
+        text="TAKE / ADD PHOTO",
+        command=take_photo,
+        font=("Arial", 10, "bold"),
         height=1
     )
+    take_button.pack(
+        side="left",
+        expand=True,
+        fill="x",
+        padx=(0, 4)
+    )
 
-    scan_button.pack(
+    solve_button = tk.Button(
+        button_row,
+        text="SOLVE ALL PHOTOS",
+        command=solve_all_photos,
+        font=("Arial", 10, "bold"),
+        height=1
+    )
+    solve_button.pack(
+        side="left",
+        expand=True,
+        fill="x",
+        padx=(4, 0)
+    )
+
+    clear_button = tk.Button(
+        content,
+        text="CLEAR PHOTOS",
+        command=clear_photos,
+        font=("Arial", 10, "bold"),
+        height=1
+    )
+    clear_button.pack(
         fill="x",
         padx=10,
-        pady=6
+        pady=(0, 6)
     )
+
+    update_camera_ui()
 
 def show_ai():
     clear_screen()
