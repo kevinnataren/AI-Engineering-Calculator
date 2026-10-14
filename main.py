@@ -23,6 +23,65 @@ angle_mode = tk.StringVar(value="DEG")
 
 client = OpenAI()
 
+
+def friendly_error(error, source="ai"):
+    """Turn technical Python/API errors into simple user messages."""
+
+    error_text = str(error).lower()
+    error_type = type(error).__name__.lower()
+
+    # Physical camera capture problem
+    if source == "camera":
+        return (
+            "Camera unavailable.\n\n"
+            "Check the camera connection and try again."
+        )
+
+    # API key / authentication problem
+    if (
+        "authentication" in error_type
+        or "api key" in error_text
+        or "incorrect api key" in error_text
+        or "401" in error_text
+    ):
+        return (
+            "API key problem.\n\n"
+            "Check your OpenAI API key."
+        )
+
+    # Internet / connection problem
+    if (
+        "connection" in error_type
+        or "connection" in error_text
+        or "network" in error_text
+        or "dns" in error_text
+        or "timed out" in error_text
+        or "timeout" in error_text
+    ):
+        return (
+            "No internet connection.\n\n"
+            "Check Wi-Fi and try again."
+        )
+
+    # API credit, quota, or rate-limit problem
+    if (
+        "rate" in error_type
+        or "429" in error_text
+        or "quota" in error_text
+        or "billing" in error_text
+        or "insufficient_quota" in error_text
+    ):
+        return (
+            "API limit reached.\n\n"
+            "Check your API balance or try again later."
+        )
+
+    # Anything unexpected
+    return (
+        "Something went wrong.\n\n"
+        "Please try again."
+    )
+
 # =========================================================
 # GENERAL
 # =========================================================
@@ -136,9 +195,12 @@ def calculate():
         result = sp.sympify(text, locals=functions)
 
         if result.is_number:
-            result = sp.N(result, 12)
+            value = float(sp.N(result, 12))
+            display_result = f"{value:.12g}"
+        else:
+            display_result = str(result)
 
-        expression.set(str(result))
+        expression.set(display_result)
 
     except Exception:
         expression.set("ERROR")
@@ -905,12 +967,13 @@ def show_camera():
                 root.after(0, capture_done)
 
             except Exception as error:
+                error_message = friendly_error(error, "camera")
 
                 def capture_error():
                     answer_box.delete("1.0", "end")
                     answer_box.insert(
                         "1.0",
-                        "CAMERA ERROR:\n\n" + str(error)
+                        error_message
                     )
                     update_camera_ui()
 
@@ -1026,7 +1089,7 @@ say exactly what is unclear instead of guessing.
                 answer = response.output_text
 
             except Exception as error:
-                answer = "CAMERA ERROR:\n\n" + str(error)
+                answer = friendly_error(error)
 
             def solve_done():
                 answer_box.delete("1.0", "end")
@@ -1241,7 +1304,7 @@ Question:
                 answer = response.output_text
 
             except Exception as error:
-                answer = "AI ERROR:\n\n" + str(error)
+                answer = friendly_error(error)
 
             def update():
 
