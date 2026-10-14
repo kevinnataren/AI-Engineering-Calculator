@@ -792,13 +792,6 @@ def show_basic_mode(title, message):
     ).pack(pady=50)
 
 
-def show_ai():
-    show_basic_mode(
-        "AI MODE",
-        "Wi-Fi AI assistant coming soon."
-    )
-
-
 def show_camera():
     clear_screen()
 
