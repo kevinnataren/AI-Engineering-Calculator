@@ -1353,6 +1353,10 @@ esp32_key_queue = queue.Queue()
 
 
 def handle_esp32_key(message):
+    if message == "KEY:ENTER":
+        calculate()
+        return
+
     key_map = {
         "KEY:7": "7",
         "KEY:8": "8",
@@ -1361,7 +1365,14 @@ def handle_esp32_key(message):
         "KEY:4": "4",
         "KEY:5": "5",
         "KEY:6": "6",
-        "KEY:MUL": "×"
+        "KEY:MUL": "×",
+        "KEY:1": "1",
+        "KEY:2": "2",
+        "KEY:3": "3",
+        "KEY:SUB": "-",
+        "KEY:0": "0",
+        "KEY:DOT": ".",
+        "KEY:ADD": "+"
     }
 
     value = key_map.get(message)
