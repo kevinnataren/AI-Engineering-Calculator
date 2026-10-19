@@ -1353,8 +1353,17 @@ esp32_key_queue = queue.Queue()
 
 
 def handle_esp32_key(message):
-    if message == "KEY:7":
-        insert_value("7")
+    key_map = {
+        "KEY:7": "7",
+        "KEY:8": "8",
+        "KEY:9": "9",
+        "KEY:DIV": "÷"
+    }
+
+    value = key_map.get(message)
+
+    if value is not None:
+        insert_value(value)
 
 
 def esp32_serial_worker():
