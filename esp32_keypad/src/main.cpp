@@ -25,7 +25,14 @@ Key keys[] = {
     {16, "KEY:0",     HIGH},
     {17, "KEY:DOT",   HIGH},
     {18, "KEY:ADD",   HIGH},
-    {21, "KEY:ENTER", HIGH}
+    {21, "KEY:ENTER", HIGH},
+
+    {38, "KEY:CLEAR", HIGH},
+    {39, "KEY:BACK",  HIGH},
+    {40, "KEY:LPAREN",HIGH},
+    {41, "KEY:RPAREN",HIGH},
+    {42, "KEY:SQRT",  HIGH},
+    {47, "KEY:POW",   HIGH}
 };
 
 const int keyCount = sizeof(keys) / sizeof(keys[0]);
@@ -38,7 +45,7 @@ void setup() {
     }
 
     delay(1000);
-    Serial.println("ESP32-S3 16-KEY TEST READY");
+    Serial.println("ESP32-S3 22-KEY TEST READY");
 }
 
 void loop() {

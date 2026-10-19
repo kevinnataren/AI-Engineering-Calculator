@@ -1353,26 +1353,44 @@ esp32_key_queue = queue.Queue()
 
 
 def handle_esp32_key(message):
+    # Control keys
     if message == "KEY:ENTER":
         calculate()
         return
 
+    if message == "KEY:CLEAR":
+        clear_calc()
+        return
+
+    if message == "KEY:BACK":
+        backspace()
+        return
+
+    # Calculator entry keys
     key_map = {
         "KEY:7": "7",
         "KEY:8": "8",
         "KEY:9": "9",
         "KEY:DIV": "÷",
+
         "KEY:4": "4",
         "KEY:5": "5",
         "KEY:6": "6",
         "KEY:MUL": "×",
+
         "KEY:1": "1",
         "KEY:2": "2",
         "KEY:3": "3",
         "KEY:SUB": "-",
+
         "KEY:0": "0",
         "KEY:DOT": ".",
-        "KEY:ADD": "+"
+        "KEY:ADD": "+",
+
+        "KEY:LPAREN": "(",
+        "KEY:RPAREN": ")",
+        "KEY:SQRT": "sqrt(",
+        "KEY:POW": "^"
     }
 
     value = key_map.get(message)
