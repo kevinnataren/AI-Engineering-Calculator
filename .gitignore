@@ -16,3 +16,4 @@ AI_WORKING_BACKUP.py
 ai_test.py
 main_before_indent_fix.py
 camera_capture_*.jpg
+.pio/

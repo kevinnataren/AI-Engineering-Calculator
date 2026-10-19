@@ -4,6 +4,9 @@ import sympy as sp
 import threading
 import base64
 import subprocess
+import queue
+import time
+import serial
 from openai import OpenAI
 
 # =========================================================
@@ -1343,9 +1346,82 @@ Question:
     ).pack(pady=3)
 
 # =========================================================
+# ESP32 PHYSICAL KEYPAD
+# =========================================================
+
+esp32_key_queue = queue.Queue()
+
+
+def handle_esp32_key(message):
+    if message == "KEY:7":
+        insert_value("7")
+
+
+def esp32_serial_worker():
+    ports = [
+        "/dev/ttyACM0",
+        "/dev/ttyUSB0"
+    ]
+
+    while True:
+        connection = None
+
+        for port in ports:
+            try:
+                connection = serial.Serial(
+                    port,
+                    115200,
+                    timeout=1
+                )
+                break
+            except Exception:
+                pass
+
+        if connection is None:
+            time.sleep(2)
+            continue
+
+        try:
+            while True:
+                line = connection.readline().decode(
+                    errors="ignore"
+                ).strip()
+
+                if line.startswith("KEY:"):
+                    esp32_key_queue.put(line)
+
+        except Exception:
+            try:
+                connection.close()
+            except Exception:
+                pass
+
+            time.sleep(2)
+
+
+def poll_esp32_keys():
+    try:
+        while True:
+            message = esp32_key_queue.get_nowait()
+            handle_esp32_key(message)
+
+    except queue.Empty:
+        pass
+
+    root.after(50, poll_esp32_keys)
+
+
+# =========================================================
 # START
 # =========================================================
 
 show_home()
+
+threading.Thread(
+    target=esp32_serial_worker,
+    daemon=True
+).start()
+
+poll_esp32_keys()
 
 root.mainloop()
