@@ -1357,7 +1357,11 @@ def handle_esp32_key(message):
         "KEY:7": "7",
         "KEY:8": "8",
         "KEY:9": "9",
-        "KEY:DIV": "÷"
+        "KEY:DIV": "÷",
+        "KEY:4": "4",
+        "KEY:5": "5",
+        "KEY:6": "6",
+        "KEY:MUL": "×"
     }
 
     value = key_map.get(message)
