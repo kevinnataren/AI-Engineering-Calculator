@@ -1353,7 +1353,24 @@ esp32_key_queue = queue.Queue()
 
 
 def handle_esp32_key(message):
-    # Control keys
+    # Mode / navigation keys
+    if message == "KEY:HOME":
+        show_home()
+        return
+
+    if message == "KEY:AI":
+        show_ai()
+        return
+
+    if message == "KEY:CAMERA":
+        show_camera()
+        return
+
+    if message == "KEY:ENG":
+        show_engineering()
+        return
+
+    # Calculator control keys
     if message == "KEY:ENTER":
         calculate()
         return
@@ -1364,6 +1381,10 @@ def handle_esp32_key(message):
 
     if message == "KEY:BACK":
         backspace()
+        return
+
+    if message == "KEY:ANGLE":
+        toggle_angle()
         return
 
     # Calculator entry keys
@@ -1390,7 +1411,15 @@ def handle_esp32_key(message):
         "KEY:LPAREN": "(",
         "KEY:RPAREN": ")",
         "KEY:SQRT": "sqrt(",
-        "KEY:POW": "^"
+        "KEY:POW": "^",
+
+        "KEY:SIN": "sin(",
+        "KEY:COS": "cos(",
+        "KEY:TAN": "tan(",
+        "KEY:LOG": "log(",
+        "KEY:LN": "ln(",
+        "KEY:PI": "pi",
+        "KEY:E": "e"
     }
 
     value = key_map.get(message)
