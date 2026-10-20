@@ -15,8 +15,23 @@ from openai import OpenAI
 
 root = tk.Tk()
 root.title("AI Engineering Calculator")
-root.geometry("320x480")
+root.attributes("-fullscreen", True)
 root.configure(bg="#151515")
+
+
+def exit_fullscreen(event=None):
+    root.attributes("-fullscreen", False)
+
+
+def toggle_fullscreen(event=None):
+    current = root.attributes("-fullscreen")
+    root.attributes("-fullscreen", not current)
+
+
+root.bind("<Escape>", exit_fullscreen)
+root.bind("<F11>", toggle_fullscreen)
+root.bind("<Control-q>", lambda event: root.destroy())
+
 
 content = tk.Frame(root, bg="#151515")
 content.pack(fill="both", expand=True)
@@ -105,11 +120,14 @@ def make_home_button(text, command):
         content,
         text=text,
         command=command,
-        font=("Arial", 14, "bold"),
-        width=16,
-        height=1
+        font=("Arial", 18, "bold")
     )
-    button.pack(pady=6)
+    button.pack(
+        fill="x",
+        padx=55,
+        pady=8,
+        ipady=8
+    )
 
 
 # =========================================================
@@ -122,18 +140,18 @@ def show_home():
     tk.Label(
         content,
         text="AI ENGINEERING\nCALCULATOR",
-        font=("Arial", 20, "bold"),
+        font=("Arial", 28, "bold"),
         fg="white",
         bg="#151515"
-    ).pack(pady=(20, 8))
+    ).pack(pady=(45, 15))
 
     tk.Label(
         content,
         text="SELECT MODE",
-        font=("Arial", 11),
+        font=("Arial", 14, "bold"),
         fg="gray",
         bg="#151515"
-    ).pack(pady=(0, 10))
+    ).pack(pady=(0, 20))
 
     make_home_button("CALC", show_calc)
     make_home_button("AI", show_ai)
@@ -219,19 +237,19 @@ def show_calc():
     clear_screen()
 
     top = tk.Frame(content, bg="#151515")
-    top.pack(fill="x", padx=10, pady=10)
+    top.pack(fill="x", padx=12, pady=(10, 6))
 
     tk.Button(
         top,
         text="HOME",
         command=show_home,
-        font=("Arial", 11, "bold")
+        font=("Arial", 13, "bold")
     ).pack(side="left")
 
     tk.Label(
         top,
         text="CALC",
-        font=("Arial", 18, "bold"),
+        font=("Arial", 22, "bold"),
         fg="white",
         bg="#151515"
     ).pack(side="left", padx=30)
@@ -240,24 +258,35 @@ def show_calc():
         top,
         text=angle_mode.get(),
         command=toggle_angle,
-        font=("Arial", 11, "bold")
+        font=("Arial", 13, "bold")
     ).pack(side="right")
 
     tk.Entry(
         content,
         textvariable=expression,
-        font=("Arial", 18),
+        font=("Arial", 24),
         justify="right",
         bd=5
     ).pack(
         fill="x",
-        padx=15,
-        pady=(5, 8),
-        ipady=7
+        padx=12,
+        pady=(4, 10),
+        ipady=10
     )
 
     keypad = tk.Frame(content, bg="#151515")
-    keypad.pack()
+    keypad.pack(
+        fill="both",
+        expand=True,
+        padx=10,
+        pady=(0, 10)
+    )
+
+    for column in range(4):
+        keypad.grid_columnconfigure(column, weight=1, uniform="calc")
+
+    for row in range(7):
+        keypad.grid_rowconfigure(row, weight=1, uniform="calc")
 
     buttons = [
         ("sin(", 0, 0),
@@ -314,14 +343,13 @@ def show_calc():
             keypad,
             text=text,
             command=command,
-            font=("Arial", 11, "bold"),
-            width=5,
-            height=1
+            font=("Arial", 16, "bold")
         ).grid(
             row=row,
             column=column,
-            padx=2,
-            pady=2
+            padx=3,
+            pady=3,
+            sticky="nsew"
         )
 
 
@@ -671,13 +699,13 @@ def show_engineering():
         top,
         text="HOME",
         command=show_home,
-        font=("Arial", 11, "bold")
+        font=("Arial", 13, "bold")
     ).pack(side="left")
 
     tk.Label(
         top,
         text="ENGINEERING",
-        font=("Arial", 16, "bold"),
+        font=("Arial", 20, "bold"),
         fg="white",
         bg="#151515"
     ).pack(side="left", padx=15)
@@ -685,7 +713,7 @@ def show_engineering():
     tk.Label(
         content,
         text="FORMULA LIBRARY",
-        font=("Arial", 11),
+        font=("Arial", 14, "bold"),
         fg="gray",
         bg="#151515"
     ).pack(pady=(5, 8))
@@ -705,10 +733,13 @@ def show_engineering():
             content,
             text=category,
             command=lambda c=category: show_formula_sheet(c),
-            font=("Arial", 11, "bold"),
-            width=20,
-            height=1
-        ).pack(pady=3)
+            font=("Arial", 15, "bold")
+        ).pack(
+            fill="x",
+            padx=45,
+            pady=6,
+            ipady=6
+        )
 
 
 def show_formula_sheet(category):
@@ -721,13 +752,13 @@ def show_formula_sheet(category):
         top,
         text="← BACK",
         command=show_engineering,
-        font=("Arial", 11, "bold")
+        font=("Arial", 13, "bold")
     ).pack(side="left")
 
     tk.Label(
         top,
         text=category,
-        font=("Arial", 16, "bold"),
+        font=("Arial", 20, "bold"),
         fg="white",
         bg="#151515"
     ).pack(side="left", padx=20)
@@ -745,12 +776,12 @@ def show_formula_sheet(category):
 
     text_box = tk.Text(
         formula_frame,
-        font=("Arial", 15),
+        font=("Arial", 17),
         wrap="word",
         bg="#eeeeee",
         fg="black",
-        padx=15,
-        pady=15,
+        padx=18,
+        pady=18,
         yscrollcommand=scrollbar.set
     )
 
@@ -814,13 +845,13 @@ def show_camera():
         top,
         text="HOME",
         command=show_home,
-        font=("Arial", 11, "bold")
+        font=("Arial", 13, "bold")
     ).pack(side="left")
 
     tk.Label(
         top,
         text="CAMERA MODE",
-        font=("Arial", 16, "bold"),
+        font=("Arial", 20, "bold"),
         fg="white",
         bg="#151515"
     ).pack(side="left", padx=15)
@@ -830,7 +861,7 @@ def show_camera():
     status_label = tk.Label(
         content,
         text="Problem images: 0 / 3",
-        font=("Arial", 11, "bold"),
+        font=("Arial", 13, "bold"),
         fg="white",
         bg="#151515"
     )
@@ -839,18 +870,18 @@ def show_camera():
     tk.Label(
         content,
         text="Take up to 3 photos for one problem",
-        font=("Arial", 10),
+        font=("Arial", 12),
         fg="white",
         bg="#151515"
     ).pack(pady=(0, 6))
 
     answer_box = tk.Text(
         content,
-        font=("Arial", 11),
+        font=("Arial", 13),
         height=11,
         wrap="word",
-        padx=6,
-        pady=5
+        padx=10,
+        pady=8
     )
 
     answer_box.pack(
@@ -1126,7 +1157,7 @@ say exactly what is unclear instead of guessing.
         button_row,
         text="TAKE / ADD PHOTO",
         command=take_photo,
-        font=("Arial", 10, "bold"),
+        font=("Arial", 12, "bold"),
         height=1
     )
     take_button.pack(
@@ -1140,7 +1171,7 @@ say exactly what is unclear instead of guessing.
         button_row,
         text="SOLVE ALL PHOTOS",
         command=solve_all_photos,
-        font=("Arial", 10, "bold"),
+        font=("Arial", 12, "bold"),
         height=1
     )
     solve_button.pack(
@@ -1154,7 +1185,7 @@ say exactly what is unclear instead of guessing.
         content,
         text="CLEAR PHOTOS",
         command=clear_photos,
-        font=("Arial", 10, "bold"),
+        font=("Arial", 12, "bold"),
         height=1
     )
     clear_button.pack(
@@ -1175,13 +1206,13 @@ def show_ai():
         top,
         text="HOME",
         command=show_home,
-        font=("Arial", 11, "bold")
+        font=("Arial", 13, "bold")
     ).pack(side="left")
 
     tk.Label(
         top,
         text="AI MODE",
-        font=("Arial", 16, "bold"),
+        font=("Arial", 20, "bold"),
         fg="white",
         bg="#151515"
     ).pack(side="left", padx=22)
@@ -1189,18 +1220,18 @@ def show_ai():
     tk.Label(
         content,
         text="ASK AI",
-        font=("Arial", 11),
+        font=("Arial", 13, "bold"),
         fg="gray",
         bg="#151515"
     ).pack(pady=(3, 2))
 
     question_box = tk.Text(
         content,
-        font=("Arial", 12),
+        font=("Arial", 14),
         height=3,
         wrap="word",
-        padx=6,
-        pady=5
+        padx=10,
+        pady=8
     )
 
     question_box.pack(
@@ -1212,18 +1243,18 @@ def show_ai():
     tk.Label(
         content,
         text="RESPONSE",
-        font=("Arial", 10, "bold"),
+        font=("Arial", 12, "bold"),
         fg="white",
         bg="#151515"
     ).pack(pady=(3, 2))
 
     answer_box = tk.Text(
         content,
-        font=("Arial", 11),
+        font=("Arial", 13),
         height=8,
         wrap="word",
-        padx=6,
-        pady=5
+        padx=10,
+        pady=8
     )
 
     answer_box.pack(
@@ -1338,7 +1369,7 @@ Question:
         content,
         text="ASK AI",
         command=ask_ai,
-        font=("Arial", 12, "bold"),
+        font=("Arial", 14, "bold"),
         height=1
     )
 
