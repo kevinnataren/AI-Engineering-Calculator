@@ -24,6 +24,8 @@ content.pack(fill="both", expand=True)
 expression = tk.StringVar()
 angle_mode = tk.StringVar(value="DEG")
 
+active_scroll_widget = None
+
 client = OpenAI()
 
 
@@ -90,6 +92,10 @@ def friendly_error(error, source="ai"):
 # =========================================================
 
 def clear_screen():
+    global active_scroll_widget
+
+    active_scroll_widget = None
+
     for widget in content.winfo_children():
         widget.destroy()
 
@@ -760,6 +766,9 @@ def show_formula_sheet(category):
 
     text_box.config(state="disabled")
 
+    global active_scroll_widget
+    active_scroll_widget = text_box
+
 
 # =========================================================
 # AI / CAMERA PLACEHOLDERS
@@ -850,6 +859,9 @@ def show_camera():
         padx=10,
         pady=4
     )
+
+    global active_scroll_widget
+    active_scroll_widget = answer_box
 
     answer_box.insert(
         "1.0",
@@ -1221,6 +1233,9 @@ def show_ai():
         pady=3
     )
 
+    global active_scroll_widget
+    active_scroll_widget = answer_box
+
     def ask_ai():
 
         question = question_box.get(
@@ -1353,6 +1368,16 @@ esp32_key_queue = queue.Queue()
 
 
 def handle_esp32_key(message):
+    if message == "KEY:UP":
+        if active_scroll_widget is not None:
+            active_scroll_widget.yview_scroll(-3, "units")
+        return
+
+    if message == "KEY:DOWN":
+        if active_scroll_widget is not None:
+            active_scroll_widget.yview_scroll(3, "units")
+        return
+
     # Mode / navigation keys
     if message == "KEY:HOME":
         show_home()
