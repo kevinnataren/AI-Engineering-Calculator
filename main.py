@@ -40,6 +40,7 @@ expression = tk.StringVar()
 angle_mode = tk.StringVar(value="DEG")
 
 active_scroll_widget = None
+current_screen = "home"
 
 client = OpenAI()
 
@@ -135,6 +136,8 @@ def make_home_button(text, command):
 # =========================================================
 
 def show_home():
+    global current_screen
+    current_screen = "home"
     clear_screen()
 
     tk.Label(
@@ -234,6 +237,8 @@ def calculate():
 
 
 def show_calc():
+    global current_screen
+    current_screen = "calc"
     clear_screen()
 
     top = tk.Frame(content, bg="#151515")
@@ -690,6 +695,8 @@ h = 6.626 × 10⁻³⁴ J·s
 # =========================================================
 
 def show_engineering():
+    global current_screen
+    current_screen = "engineering"
     clear_screen()
 
     top = tk.Frame(content, bg="#151515")
@@ -743,6 +750,8 @@ def show_engineering():
 
 
 def show_formula_sheet(category):
+    global current_screen
+    current_screen = "formula"
     clear_screen()
 
     top = tk.Frame(content, bg="#151515")
@@ -836,6 +845,8 @@ def show_basic_mode(title, message):
 
 
 def show_camera():
+    global current_screen
+    current_screen = "camera"
     clear_screen()
 
     top = tk.Frame(content, bg="#151515")
@@ -1197,6 +1208,8 @@ say exactly what is unclear instead of guessing.
     update_camera_ui()
 
 def show_ai():
+    global current_screen
+    current_screen = "ai"
     clear_screen()
 
     top = tk.Frame(content, bg="#151515")
@@ -1436,7 +1449,15 @@ def handle_esp32_key(message):
         return
 
     if message == "KEY:BACK":
-        backspace()
+        if current_screen == "calc":
+            backspace()
+
+        elif current_screen == "formula":
+            show_engineering()
+
+        elif current_screen in ("ai", "camera", "engineering"):
+            show_home()
+
         return
 
     if message == "KEY:ANGLE":
