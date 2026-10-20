@@ -1,6 +1,6 @@
 # AI Engineering Calculator
 
-A custom handheld engineering calculator built around a Raspberry Pi, ESP32, camera, and AI.
+A custom handheld engineering calculator built around a Raspberry Pi, ESP32-S3, camera, physical keypad, touchscreen display, and AI.
 
 The goal of this project is to create a portable calculator-style device that combines traditional scientific calculator functions with engineering reference tools, AI assistance, and camera-based problem solving.
 
@@ -8,10 +8,16 @@ The goal of this project is to create a portable calculator-style device that co
 
 - Scientific calculator
 - Degree and radian modes
-- Engineering formula library
+- Offline engineering formula library
 - AI engineering assistant over Wi-Fi
-- Raspberry Pi camera problem scanning
-- AI image analysis and step-by-step solutions
+- Camera-based engineering problem solving
+- Up to 3 photos for one continuous problem
+- ESP32-S3 6x6 physical keypad
+- Physical navigation and scrolling
+- Waveshare 2.8-inch 480x640 touchscreen
+- Fullscreen calculator interface
+- Automatic startup
+- Automatic ESP32 serial reconnection
 
 ## Calculator Modes
 
@@ -39,9 +45,9 @@ Responses are formatted for a small calculator display using:
 - Answer
 
 ### CAMERA
-Uses a Raspberry Pi camera to capture a math or engineering problem.
+Uses the Raspberry Pi camera to capture math or engineering problems.
 
-The image is sent to an AI vision model, which reads the problem and returns a structured solution on the calculator interface.
+Up to three photos can be captured for one continuous problem. The images are sent together to an AI vision model, which reads the complete problem and returns a structured solution on the calculator interface.
 
 ### ENGINEERING
 Offline engineering formula library containing sections for:
@@ -56,52 +62,50 @@ Offline engineering formula library containing sections for:
 
 ## Hardware
 
-Current prototype:
+Current development hardware:
 
 - Raspberry Pi 5
-- Raspberry Pi Camera
-- ESP32
-- Monitor
-- Keyboard and mouse
+- Raspberry Pi Camera Module 3 Wide NoIR
+- ESP32-S3
+- Waveshare 2.8-inch 480x640 HDMI LCD
 
-Planned final hardware:
+Final handheld hardware:
 
-- Raspberry Pi Zero 2 W or similar compact computer
-- ESP32 keypad controller
-- Small LCD
+- Raspberry Pi 3 Model A+
+- ESP32-S3 keypad controller
+- Waveshare 2.8-inch 480x640 HDMI LCD
+- Raspberry Pi Camera Module 3 Wide NoIR
 - Physical calculator keypad
-- Rechargeable battery
+- Rechargeable battery system
 - USB-C charging
-- Custom enclosure
+- Calculator-style donor enclosure
 
 ## Project Status
 
 | Feature | Status |
 |---|---|
-| Main interface | ✅ Complete |
-| Scientific calculator | ✅ Complete |
-| Engineering formulas | ✅ Complete |
-| AI mode | ✅ Complete |
-| Camera problem solver | ✅ Complete |
-| ESP32 keypad | ⏳ Next |
-| Small LCD | ⏳ Planned |
-| Battery system | ⏳ Planned |
-| Custom enclosure | ⏳ Planned |
+| Main interface | Complete |
+| Scientific calculator | Complete |
+| Engineering formulas | Complete |
+| AI mode | Complete |
+| Multi-image camera solver | Complete |
+| ESP32-S3 6x6 keypad firmware | Complete |
+| Physical keypad integration | Complete |
+| Waveshare display integration | Complete |
+| Fullscreen UI optimization | Complete |
+| Automatic startup | Complete |
+| ESP32 automatic reconnect | Complete |
+| Raspberry Pi 3 A+ deployment | Tested |
+| Portable battery system | In progress |
+| Final donor enclosure | Pending hardware |
 
 ## System Architecture
 
-```text
-                    Wi-Fi / AI API
-                          ↑
-                          |
-Camera ───────────→ Raspberry Pi
-                          ↑
-                          |
-ESP32 ─────────────→ Keypad
+Camera -> Raspberry Pi 3 A+ -> Waveshare LCD
 
-Raspberry Pi ──────→ LCD Display
-```
+6x6 Physical Keypad -> ESP32-S3 -> USB Serial -> Raspberry Pi 3 A+
 
+Raspberry Pi 3 A+ -> Wi-Fi -> AI API
 
 ## Software
 
@@ -114,21 +118,27 @@ Main technologies include:
 - SymPy
 - OpenAI API
 - Raspberry Pi camera tools
+- PySerial
 - Multithreading
+- PlatformIO / Arduino framework for ESP32-S3 firmware
 
-## Future Development
+## Raspberry Pi Deployment
 
-The next stages of the project will focus on turning the desktop prototype into a fully portable handheld device.
+The project includes setup_pi.sh and requirements.txt for installing the required Raspberry Pi system packages, creating the Python virtual environment, and installing Python dependencies.
 
-Planned improvements include:
+The calculator is configured to launch automatically when the Raspberry Pi desktop starts.
 
-- ESP32 physical keypad
-- Small integrated display
-- Battery-powered operation
-- USB-C charging
-- Automatic startup directly into the calculator UI
-- Custom calculator enclosure
-- Improved engineering tools and formula libraries
+## Current Development Stage
+
+The core software and electronics interfaces are operational.
+
+Remaining work is focused on:
+
+- Portable power integration
+- Final physical keypad construction
+- Internal component placement
+- Donor enclosure modification
+- Final handheld assembly and testing
 
 ## Author
 
