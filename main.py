@@ -270,7 +270,7 @@ def show_calc():
         content,
         textvariable=expression,
         font=("Arial", 24),
-        justify="right",
+        justify="left",
         bd=5
     ).pack(
         fill="x",
