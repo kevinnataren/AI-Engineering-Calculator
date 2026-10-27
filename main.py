@@ -42,6 +42,11 @@ angle_mode = tk.StringVar(value="DEG")
 active_scroll_widget = None
 current_screen = "home"
 
+# Temporary CAMERA session memory
+image_paths = []
+camera_saved_answer = ""
+camera_last_activity = 0
+
 client = OpenAI()
 
 
@@ -845,7 +850,7 @@ def show_basic_mode(title, message):
 
 
 def show_camera():
-    global current_screen
+    global current_screen, camera_saved_answer, camera_last_activity
     current_screen = "camera"
     clear_screen()
 
@@ -866,8 +871,6 @@ def show_camera():
         fg="white",
         bg="#151515"
     ).pack(side="left", padx=15)
-
-    image_paths = []
 
     status_label = tk.Label(
         content,
@@ -905,12 +908,20 @@ def show_camera():
     global active_scroll_widget
     active_scroll_widget = answer_box
 
-    answer_box.insert(
-        "1.0",
-        "Use TAKE / ADD PHOTO to capture one problem.\n\n"
-        "If the problem continues onto another page or picture, "
-        "add the next photo, then press SOLVE ALL PHOTOS."
-    )
+    if camera_saved_answer and time.time() - camera_last_activity <= 900:
+        answer_box.insert("1.0", camera_saved_answer)
+    else:
+        if camera_saved_answer:
+            camera_saved_answer = ""
+            camera_last_activity = 0
+            image_paths.clear()
+
+        answer_box.insert(
+            "1.0",
+            "Use TAKE / ADD PHOTO to capture one problem.\n\n"
+            "If the problem continues onto another page or picture, "
+            "add the next photo, then press SOLVE ALL PHOTOS."
+        )
 
     button_row = tk.Frame(content, bg="#151515")
     button_row.pack(fill="x", padx=10, pady=(2, 4))
@@ -1142,6 +1153,11 @@ say exactly what is unclear instead of guessing.
                 answer = friendly_error(error)
 
             def solve_done():
+                global camera_saved_answer, camera_last_activity
+
+                camera_saved_answer = answer
+                camera_last_activity = time.time()
+
                 answer_box.delete("1.0", "end")
                 answer_box.insert("1.0", answer)
                 update_camera_ui()
@@ -1154,7 +1170,12 @@ say exactly what is unclear instead of guessing.
         ).start()
 
     def clear_photos():
+        global camera_saved_answer, camera_last_activity
+
         image_paths.clear()
+        camera_saved_answer = ""
+        camera_last_activity = 0
+
         answer_box.delete("1.0", "end")
         answer_box.insert(
             "1.0",
