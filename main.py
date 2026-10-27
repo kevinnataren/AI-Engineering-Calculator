@@ -7,6 +7,7 @@ import subprocess
 import queue
 import time
 import serial
+from pathlib import Path
 from openai import OpenAI
 
 # =========================================================
@@ -46,6 +47,9 @@ current_screen = "home"
 image_paths = []
 camera_saved_answer = ""
 camera_last_activity = 0
+camera_method = "GENERAL"
+
+ECE361_METHOD_FILE = Path("/home/n_kevin123/AI_Calculator/ece361_method.txt")
 
 client = OpenAI()
 
@@ -923,6 +927,37 @@ def show_camera():
             "add the next photo, then press SOLVE ALL PHOTOS."
         )
 
+    method_row = tk.Frame(content, bg="#151515")
+    method_row.pack(fill="x", padx=10, pady=(2, 4))
+
+    method_label = tk.Label(
+        method_row,
+        text=f"METHOD: {camera_method}",
+        font=("Arial", 12, "bold"),
+        fg="white",
+        bg="#151515"
+    )
+    method_label.pack(side="left", padx=(0, 8))
+
+    def set_camera_method(method):
+        global camera_method
+        camera_method = method
+        method_label.config(text=f"METHOD: {camera_method}")
+
+    tk.Button(
+        method_row,
+        text="GENERAL",
+        command=lambda: set_camera_method("GENERAL"),
+        font=("Arial", 11, "bold")
+    ).pack(side="left", padx=3)
+
+    tk.Button(
+        method_row,
+        text="ECE 361",
+        command=lambda: set_camera_method("ECE 361"),
+        font=("Arial", 11, "bold")
+    ).pack(side="left", padx=3)
+
     button_row = tk.Frame(content, bg="#151515")
     button_row.pack(fill="x", padx=10, pady=(2, 4))
 
@@ -1066,10 +1101,32 @@ def show_camera():
         def solve_worker():
 
             try:
+                course_method = ""
+
+                if camera_method == "ECE 361":
+                    try:
+                        course_method = ECE361_METHOD_FILE.read_text().strip()
+                    except Exception:
+                        course_method = ""
+
+                method_instructions = ""
+
+                if camera_method == "ECE 361" and course_method:
+                    method_instructions = (
+                        "ECE 361 COURSE MODE IS ACTIVE.\n"
+                        "Follow the professor's stored method, notation, "
+                        "equation order, and solution style exactly.\n"
+                        "Do not replace the stored method with a shortcut "
+                        "or a different valid method.\n\n"
+                        "STORED ECE 361 METHOD AND EXAMPLES:\n"
+                        + course_method
+                        + "\n\nEND OF ECE 361 METHOD.\n\n"
+                    )
+
                 content_items = [
                     {
                         "type": "input_text",
-                        "text": """
+                        "text": method_instructions + """
 You are an engineering calculator tutor.
 
 These images belong to ONE continuous engineering or math problem.
@@ -1094,7 +1151,8 @@ Use normal engineering symbols:
 ÷
 √
 
-For numerical problems, use this exact style:
+For numerical problems, use this exact style UNLESS ECE 361 COURSE MODE IS ACTIVE.
+When ECE 361 COURSE MODE is active, follow the stored ECE 361 method, notation, and equation order instead.
 
 Given:
 List known values and units.

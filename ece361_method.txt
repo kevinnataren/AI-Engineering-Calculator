@@ -1,0 +1,704 @@
+ECE 361 PROFESSOR METHOD LIBRARY
+
+GENERAL RULES
+
+OUTPUT STYLE
+
+Keep solutions compact and equation-driven like class notebook work.
+
+Show every important equation and calculation needed to reach the answer, but minimize explanatory sentences.
+
+Prefer:
+equation -> substitution -> simplification -> result
+
+Do not explain basic algebra in words.
+
+Do not repeat information already shown by the equations.
+
+For multi-region problems, label each region briefly and show the field calculation directly.
+
+Keep vector directions and units.
+
+Do not skip professor-method steps just to make the solution shorter.
+
+First identify the type of problem and geometry.
+
+Use the matching method from this library.
+
+Follow the same equation order, coordinate system, notation, and intermediate steps used in the class notes.
+
+Do not jump directly to a memorized final formula when the notes derive the result.
+
+Show the governing equation first.
+
+Define required vectors, coordinates, differential elements, and boundary conditions before using them.
+
+Keep vector directions such as ax, ay, az, ar, arho, and aphi when required.
+
+For electrostatic potential problems, use:
+E = -grad(V)
+
+For material problems, use:
+D = epsilon E
+
+Only calculate additional quantities such as D, charge, capacitance, current, resistance, H, B, or power when required by the problem.
+
+If several methods could solve a problem, prefer the method demonstrated in these ECE 361 notes.
+
+==================================================
+COULOMB LAW / POINT CHARGES / CONTINUOUS CHARGE
+==================================================
+
+For point-charge electric-field problems:
+
+1. Identify the source charge location r' and observation point r.
+
+2. Form the displacement vector:
+R = r - r'
+
+3. Find its magnitude:
+R = |R|
+
+4. Find the unit vector:
+aR = R / |R|
+
+5. Use Coulomb's law in vector form:
+E = Q / (4 pi epsilon R^2) aR
+
+For multiple point charges, calculate the field from each charge separately and use superposition:
+Etotal = E1 + E2 + ...
+
+Keep vector directions throughout the calculation.
+
+For continuous charge distributions, do not replace the distribution with a point charge unless symmetry and the class method allow it.
+
+Use the appropriate differential charge:
+
+Line charge:
+dQ = rhoL dl'
+
+Surface charge:
+dQ = rhoS ds'
+
+Volume charge:
+dQ = rhoV dv'
+
+Then write:
+dE = dQ / (4 pi epsilon R^2) aR
+
+or equivalently:
+dE = dQ R / (4 pi epsilon |R|^3)
+
+Integrate over the complete source distribution.
+
+For cylindrical or circular geometry, define source and observation coordinates before integrating.
+
+For a disk or circular surface, use cylindrical coordinates and:
+ds' = rho' drho' dphi'
+
+Use symmetry to cancel field components only after showing why they cancel.
+
+For rectangular or Cartesian surfaces, separate the resulting field into x, y, and z components when necessary.
+
+After integration, simplify the vector result and keep the required unit-vector direction.
+
+Do not skip the setup of r', r, R, differential charge, and the integration limits when the notebook method shows them.
+
+==================================================
+GAUSS LAW / DIELECTRICS / BOUNDARY CONDITIONS
+==================================================
+
+For problems with sufficient symmetry, use Gauss's law.
+
+Start with:
+div(D) = rhoV
+
+Integral form:
+closed integral D dot ds = Qenclosed
+
+1. Identify the symmetry and choose the Gaussian surface.
+
+2. State the direction of D.
+
+For spherical symmetry:
+D = ar Dr
+
+For cylindrical symmetry:
+D = arho Drho
+
+3. Write the correct differential surface element.
+
+For a spherical surface:
+ds = ar r^2 sin(theta) dtheta dphi
+
+For a cylindrical surface:
+ds = arho rho dphi dz
+
+4. Calculate enclosed charge explicitly:
+Qenclosed = integral rhoV dv
+
+Use the correct volume element for the coordinate system.
+
+For spherical coordinates:
+dv = r^2 sin(theta) dr dtheta dphi
+
+For cylindrical coordinates:
+dv = rho drho dphi dz
+
+5. Substitute Qenclosed into Gauss's law and solve for D.
+
+6. Then calculate:
+E = D / epsilon
+
+If the problem contains multiple material regions, solve D and E piecewise for each region.
+
+Use:
+epsilon = epsilon0 epsilonr
+
+At dielectric boundaries apply the appropriate boundary conditions.
+
+Tangential electric field:
+n cross (E1 - E2) = 0
+
+Normal electric displacement:
+n dot (D1 - D2) = rhoS
+
+For a PEC conductor, the electric field inside the conductor is zero.
+
+When surface charge on a conductor is requested, use the normal-D boundary condition to find rhoS.
+
+Then, if total charge is requested:
+Q = integral rhoS ds
+
+Do not jump directly to a memorized field expression when the notebook derives D from enclosed charge.
+
+For piecewise charge distributions, carefully determine Qenclosed separately for each radial region before finding D and E.
+
+==================================================
+POISSON / LAPLACE / CAPACITOR PROBLEMS
+==================================================
+
+Start from the governing potential equation.
+
+Use:
+div(D) = rhoV
+D = epsilon E
+E = -grad(V)
+
+Therefore:
+div(epsilon grad(V)) = -rhoV
+
+For a homogeneous material:
+laplacian(V) = -rhoV / epsilon
+
+If rhoV = 0:
+laplacian(V) = 0
+
+This is Laplace's equation.
+
+Choose the coordinate system that matches the geometry and simplify Laplace's equation using symmetry before integrating.
+
+PARALLEL PLATE / CARTESIAN METHOD
+
+If V changes only with z:
+
+1. Start with:
+laplacian(V) = 0
+
+2. State that the x and y derivatives are zero.
+
+3. Reduce to:
+d2V/dz2 = 0
+
+4. Integrate:
+dV/dz = A
+
+5. Integrate again:
+V(z) = Az + B
+
+6. Apply the given voltage boundary conditions to solve A and B.
+
+7. Write the final V(z).
+
+8. Find:
+E = -grad(V)
+
+9. Then:
+D = epsilon E
+
+10. If requested, find conductor surface charge using the normal-D boundary condition.
+
+11. Find total charge Q if required.
+
+12. Find capacitance only after obtaining charge:
+C = Q / V
+
+COAXIAL / CYLINDRICAL METHOD
+
+For coaxial conductors with cylindrical symmetry:
+
+1. Start with Laplace's equation in cylindrical coordinates.
+
+2. Use symmetry to eliminate phi and z dependence.
+
+3. Reduce to:
+(1/rho) d/drho (rho dV/drho) = 0
+
+4. Integrate:
+rho dV/drho = A
+
+5. Therefore:
+dV/drho = A/rho
+
+6. Integrate:
+V(rho) = A ln(rho) + B
+
+7. Apply the conductor voltage boundary conditions.
+
+For the common case:
+V(a) = V0
+V(b) = 0
+
+solve for A and B.
+
+8. Write the final V(rho).
+
+For these boundary conditions it can be simplified to:
+V(rho) = V0 ln(b/rho) / ln(b/a)
+
+9. Find the electric field from:
+E = -grad(V)
+
+For this geometry:
+E = arho V0 / (rho ln(b/a))
+
+10. Find D using:
+D = epsilon E
+
+11. Find surface charge or total charge from D if required.
+
+12. Derive capacitance from:
+C = Q / V0
+
+Do not begin a derivation problem by inserting the memorized coaxial capacitance formula.
+
+Follow the order:
+Laplace equation -> symmetry -> integrate -> boundary conditions -> V -> E -> D -> charge -> capacitance.
+
+==================================================
+CONDUCTIVITY / CURRENT / RESISTANCE
+==================================================
+
+For conduction problems use:
+
+J = sigma E
+
+Current:
+I = integral J dot ds
+
+Voltage difference:
+V = integral E dot dl
+
+Resistance:
+R = V / I
+
+Do not immediately use a memorized resistance formula if the geometry requires a field derivation.
+
+For problems where the electric field is not directly given:
+
+1. Identify the geometry and coordinate system.
+
+2. Start from Laplace's equation:
+laplacian(V) = 0
+
+3. Use symmetry to simplify the equation.
+
+4. Integrate to obtain the voltage function.
+
+5. Apply the given voltage boundary conditions.
+
+6. Find the electric field:
+E = -grad(V)
+
+7. Find current density:
+J = sigma E
+
+8. Find total current:
+I = integral J dot ds
+
+Use the correct surface element and integration limits for the geometry.
+
+9. Calculate the voltage difference if it is not already given.
+
+10. Finally calculate:
+R = V / I
+
+Keep the direction of E and J when vectors are required.
+
+For cylindrical, radial, or angular geometries, derive the field using the appropriate coordinate form instead of replacing the geometry with a simple uniform-field resistance formula.
+
+Follow the order:
+geometry -> Laplace -> V -> E -> J -> I -> R.
+
+==================================================
+MAGNETOSTATICS / AMPERE LAW
+==================================================
+
+Use the magnetic quantities:
+
+B = mu H
+
+mu = mu0 mur
+
+mu0 = 4 pi x 10^-7 H/m
+
+Magnetic force on a moving charge:
+Fm = q v cross B
+
+Ampere's law:
+closed integral B dot dl = mu Ienclosed
+
+or in terms of H:
+closed integral H dot dl = Ienclosed
+
+Differential form:
+curl(B) = mu J
+
+For magnetostatic problems:
+
+1. Identify the current distribution and geometry.
+
+2. Determine the expected direction of the magnetic field using symmetry and the right-hand rule.
+
+3. Choose an Amperian path that matches the symmetry.
+
+4. Write the closed-loop integral before simplifying it.
+
+5. Determine Ienclosed.
+
+6. Use symmetry to take the constant field magnitude outside the integral.
+
+7. Evaluate the path integral.
+
+8. Solve for B or H.
+
+9. Keep the correct unit-vector direction in the final answer.
+
+INFINITE STRAIGHT WIRE
+
+For a long straight wire carrying current I0:
+
+Choose a circular Amperian path of radius rho around the wire.
+
+The field direction is aphi.
+
+Write:
+closed integral B dot dl = mu I0
+
+With:
+dl = aphi rho dphi
+
+Then:
+integral from 0 to 2pi of Bphi rho dphi = mu I0
+
+Therefore:
+Bphi (2 pi rho) = mu I0
+
+and:
+B = aphi mu I0 / (2 pi rho)
+
+Do not begin with the final infinite-wire formula when a derivation is expected.
+
+Follow the order:
+geometry -> field direction -> Amperian path -> integral -> enclosed current -> solve -> vector direction.
+
+==================================================
+UNIFORM PLANE WAVES
+==================================================
+
+For plane-wave problems, first identify:
+
+- propagation direction
+- medium properties
+- frequency or wavelength
+- given E or H field
+- whether the medium is lossless or lossy
+
+For a lossless simple medium:
+
+epsilon = epsilon0 epsilonr
+mu = mu0 mur
+
+Phase constant:
+beta = omega sqrt(mu epsilon)
+
+Wave vector:
+k = n beta
+
+where n is the propagation unit vector.
+
+Phase velocity:
+vph = 1 / sqrt(mu epsilon)
+
+Wavelength:
+lambda = 2 pi / beta
+
+Frequency:
+f = vph / lambda
+
+Angular frequency:
+omega = 2 pi f
+
+Intrinsic impedance:
+eta = sqrt(mu / epsilon)
+
+If mur = 1:
+eta = 377 / sqrt(epsilonr)
+
+PLANE-WAVE FIELD METHOD
+
+1. Determine the propagation unit vector n.
+
+2. Calculate the required wave quantities such as vph, lambda, f, omega, beta, and k.
+
+3. Enforce the transverse-wave condition:
+E dot n = 0
+
+The electric field must be perpendicular to the propagation direction.
+
+4. Write the electric-field phasor with the correct propagation factor.
+
+For propagation in the +n direction use the class phasor convention:
+E(r) = E0 exp(-j k dot r)
+
+5. Find the magnetic field from:
+H = (1/eta) n cross E
+
+6. Keep E, H, and n mutually perpendicular with the correct right-handed orientation.
+
+7. If the instantaneous field is requested, convert the phasor using the class convention:
+real part of [E(r) exp(j omega t)]
+
+This produces cosine-form time-domain fields.
+
+For a field with phase theta:
+E(r,t) = E0 cos(omega t - k dot r + theta)
+
+ARBITRARY PROPAGATION DIRECTION
+
+If propagation is not along a coordinate axis:
+
+1. Write n explicitly as a unit vector.
+
+2. Find:
+k = n beta
+
+3. Use:
+E0 dot n = 0
+
+to determine or verify the electric-field direction.
+
+4. Find:
+H = (1/eta) n cross E
+
+Show the vector cross product when required.
+
+Do not assume propagation is along z when the problem gives another direction.
+
+Follow the order:
+medium -> propagation direction -> wave quantities -> transverse condition -> E -> H -> time-domain form if requested.
+
+==================================================
+LOSSY WAVES / ATTENUATION / DISPERSION
+==================================================
+
+First determine whether the medium is lossless or lossy.
+
+For a lossy medium, use the propagation constant:
+
+gamma = alpha + j beta
+
+where:
+
+alpha = attenuation constant
+beta = phase constant
+
+A wave propagating in the +z direction has the form:
+
+E(z) = E0 exp(-alpha z) exp(-j beta z)
+
+The factor exp(-alpha z) represents attenuation.
+
+The factor exp(-j beta z) represents phase propagation.
+
+For a lossless medium:
+alpha = 0
+
+For a conducting medium, determine gamma using the given:
+sigma
+omega
+mu
+epsilon
+
+Do not automatically use the lossless beta expression when conductivity is present.
+
+PHASE VELOCITY
+
+Use:
+vph = omega / beta
+
+For a lossless nondispersive medium:
+vph = 1 / sqrt(mu epsilon)
+
+Also:
+beta = 2 pi / lambda
+
+GROUP VELOCITY
+
+Use:
+vg = d omega / d beta
+
+or:
+vg = 1 / (d beta / d omega)
+
+When the professor asks for the derivation, use two nearby frequencies and propagation constants:
+
+omega1 = omega0 - delta_omega
+omega2 = omega0 + delta_omega
+
+beta1 = beta0 - delta_beta
+beta2 = beta0 + delta_beta
+
+Add the two waves and use the trigonometric identity to separate the rapidly varying carrier from the slowly varying envelope.
+
+Identify:
+
+phase velocity = carrier propagation velocity
+
+group velocity = envelope propagation velocity
+
+For dispersion classification, examine how phase velocity changes with frequency.
+
+If:
+dvph/domega = 0
+
+the medium is nondispersive and:
+vg = vph
+
+If phase velocity varies with frequency, the medium is dispersive.
+
+Follow the professor's derivative steps when relating group velocity and phase velocity instead of jumping directly to the final relationship.
+
+When solving numerical problems, calculate alpha and beta first when necessary, then determine wavelength, phase velocity, attenuation, or group velocity as requested.
+
+==================================================
+POYNTING VECTOR / ELECTROMAGNETIC POWER
+==================================================
+
+For plane-wave power problems, first determine E, H, and the propagation direction using the plane-wave method.
+
+The Poynting vector gives the direction and magnitude of electromagnetic power flow.
+
+For instantaneous fields use:
+S = E cross H
+
+The direction of S must agree with the wave propagation direction.
+
+For a uniform plane wave:
+H = (1/eta) n cross E
+
+Therefore the power flow is along n.
+
+When using sinusoidal instantaneous fields, keep the time dependence during the calculation.
+
+For fields with matching phase, the instantaneous power contains a cosine-squared term.
+
+If E has peak magnitude E0, the instantaneous power magnitude can be written in the form:
+S = (E0^2 / eta) cos^2(phase)
+
+with the propagation unit vector included.
+
+If average power is requested, use the appropriate time-average Poynting vector rather than the instantaneous value.
+
+For phasor fields:
+Save = (1/2) Re(E cross H*)
+
+where H* is the complex conjugate of H.
+
+For a lossless uniform plane wave with peak electric-field magnitude E0:
+Save = E0^2 / (2 eta)
+
+in the propagation direction.
+
+Do not confuse instantaneous power with average power.
+
+Follow the order:
+find E -> find H -> cross product -> verify propagation direction -> instantaneous or average power as requested.
+
+==================================================
+PLANE-WAVE POLARIZATION
+==================================================
+
+For polarization problems, first identify the two transverse electric-field components.
+
+For a wave propagating in the z direction, write:
+
+Ex = E0x cos(omega t - beta z + theta_x)
+
+Ey = E0y cos(omega t - beta z + theta_y)
+
+Find the relative phase:
+
+delta_theta = theta_y - theta_x
+
+Use the component magnitudes and relative phase to determine the polarization.
+
+LINEAR POLARIZATION
+
+The wave is linearly polarized when the transverse components remain in a fixed direction.
+
+A common case is:
+delta_theta = 0 or 180 degrees
+
+The component amplitudes do not have to be equal for linear polarization.
+
+CIRCULAR POLARIZATION
+
+Circular polarization requires:
+
+|E0x| = |E0y|
+
+and a relative phase difference of:
+
+delta_theta = +90 degrees
+
+or:
+
+delta_theta = -90 degrees
+
+Determine the rotation sense using the propagation direction and the phase relationship.
+
+ELLIPTICAL POLARIZATION
+
+If the two transverse components produce a rotating field but do not satisfy the equal-magnitude circular condition, the polarization is generally elliptical.
+
+METHOD
+
+1. Identify the propagation direction.
+
+2. Identify the two transverse E components.
+
+3. Write their amplitudes and phases.
+
+4. Calculate:
+delta_theta = theta_y - theta_x
+
+5. Compare the amplitudes.
+
+6. Classify the wave as linear, circular, or elliptical.
+
+7. If requested, determine the rotation sense using the class phasor convention and propagation direction.
+
+Do not classify polarization from amplitude alone.
+
+Use both relative amplitude and relative phase.
